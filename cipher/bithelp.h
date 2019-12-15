@@ -53,7 +53,7 @@ _gcry_bswap32(u32 x)
 static inline u64
 _gcry_bswap64(u64 x)
 {
-	return ((u64)_gcry_bswap32(x) << 32) | (_gcry_bswap32(x >> 32));
+	return ((u64)_gcry_bswap32((u32)x) << 32) | (_gcry_bswap32((u32)(x >> 32)));
 }
 #endif
 
@@ -106,9 +106,9 @@ _gcry_ctz64(u64 x)
   return x? __builtin_ctz (x) : 8 * sizeof (x);
 #else
   if ((x & 0xffffffff))
-    return _gcry_ctz (x);
+    return _gcry_ctz ((u32)x);
   else
-    return 32 + _gcry_ctz (x >> 32);
+    return 32 + _gcry_ctz ((u32)(x >> 32));
 #endif
 }
 

@@ -397,7 +397,7 @@ mul_mod (mpi_ptr_t xp, mpi_size_t *xsize_p,
  */
 void
 _gcry_mpi_powm (gcry_mpi_t res,
-                gcry_mpi_t base, gcry_mpi_t expo, gcry_mpi_t mod)
+                const gcry_mpi_t base, const gcry_mpi_t expo, const gcry_mpi_t mod)
 {
   /* Pointer to the limbs of the arguments, their size and signs. */
   mpi_ptr_t  rp, ep, mp, bp;

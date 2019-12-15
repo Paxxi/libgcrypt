@@ -257,6 +257,7 @@ static void
 init_system_rng (void)
 {
   system_rng_available = 0;
+#ifndef MS_APP
   hRNGProv = NULL;
 
   hAdvAPI32 = GetModuleHandle ("AdvAPI32.dll");
@@ -289,6 +290,7 @@ init_system_rng (void)
       hAdvAPI32 = NULL;
     }
   else
+#endif
     system_rng_available = 1;
 }
 
@@ -300,6 +302,10 @@ read_system_rng (void (*add)(const void*, size_t, enum random_origins),
 {
   BYTE buffer[ SYSTEMRNG_BYTES + 8 ];
   int quality = 0;
+#ifdef MS_APP
+  if (uwp_urandom(buffer, SYSTEMRNG_BYTES))
+    quality = 80;
+#else
 
   if (!system_rng_available)
     return;
@@ -317,6 +323,7 @@ read_system_rng (void (*add)(const void*, size_t, enum random_origins),
       if ( pRtlGenRandom (buffer, SYSTEMRNG_BYTES))
         quality = 50;
     }
+#endif
   if (quality > 0)
     {
       if (debug_me)
@@ -337,7 +344,7 @@ read_mbm_data (void (*add)(const void*, size_t, enum random_origins),
   HANDLE hMBMData;
   SharedData *mbmDataPtr;
 
-  hMBMData = OpenFileMapping (FILE_MAP_READ, FALSE, "$M$B$M$5$S$D$" );
+  hMBMData = OpenFileMapping (FILE_MAP_READ, FALSE, L"$M$B$M$5$S$D$" );
   if (hMBMData)
     {
       mbmDataPtr = (SharedData*)MapViewOfFile (hMBMData, FILE_MAP_READ,0,0,0);
@@ -353,12 +360,12 @@ read_mbm_data (void (*add)(const void*, size_t, enum random_origins),
     }
 }
 
-
 /* Fallback method using the registry to poll the statistics.  */
 static void
 registry_poll (void (*add)(const void*, size_t, enum random_origins),
                enum random_origins requester)
 {
+  #ifndef MS_APP
   static int cbPerfData = PERFORMANCE_BUFFER_SIZE;
   int iterations;
   DWORD dwSize, status;
@@ -478,6 +485,7 @@ registry_poll (void (*add)(const void*, size_t, enum random_origins),
      isn't done then any system components which provide performance data
      can't be removed or changed while the handle remains active.  */
   RegCloseKey (HKEY_PERFORMANCE_DATA);
+#endif
 }
 
 
@@ -494,6 +502,7 @@ slow_gatherer ( void (*add)(const void*, size_t, enum random_origins),
   int no_results = 0;
   void *buffer;
 
+#ifndef MS_APP
   if ( !is_initialized )
     {
       HKEY hKey;
@@ -569,10 +578,12 @@ slow_gatherer ( void (*add)(const void*, size_t, enum random_origins),
 
       is_initialized = 1;
     }
+#endif
 
   read_system_rng ( add, requester );
   read_mbm_data ( add, requester );
 
+#ifndef MS_APP
   /* Get network statistics.    Note: Both NT Workstation and NT Server by
      default will be running both the workstation and server services.  The
      heuristic below is probably useful though on the assumption that the
@@ -765,6 +776,7 @@ slow_gatherer ( void (*add)(const void*, size_t, enum random_origins),
      somewhat troublesome registry poll.  */
   if (no_results < 15)
     registry_poll (add, requester);
+#endif
 }
 
 
@@ -786,12 +798,6 @@ _gcry_rndw32_gather_random (void (*add)(const void*, size_t,
 
   if (!is_initialized)
     {
-      OSVERSIONINFO osvi = { sizeof( osvi ) };
-
-      GetVersionEx( &osvi );
-      if (osvi.dwPlatformId != VER_PLATFORM_WIN32_NT)
-        log_fatal ("can only run on a Windows NT platform\n" );
-      system_is_w2000 = (osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0);
       init_system_rng ();
       is_initialized = 1;
     }
@@ -842,22 +848,30 @@ _gcry_rndw32_gather_random_fast (void (*add)(const void*, size_t,
                         ADDINT((SIZE_T)aptr);                      \
                       } while (0)
 
+#ifndef MS_APP
     ADDPTR ( GetActiveWindow ());
     ADDPTR ( GetCapture ());
+#endif
+#ifndef MS_APP
     ADDPTR ( GetClipboardOwner ());
     ADDPTR ( GetClipboardViewer ());
+#endif
     ADDPTR ( GetCurrentProcess ());
     ADDINT ( GetCurrentProcessId ());
     ADDPTR ( GetCurrentThread ());
     ADDINT ( GetCurrentThreadId ());
+#ifndef MS_APP
     ADDPTR ( GetDesktopWindow ());
     ADDPTR ( GetFocus ());
     ADDINT ( GetInputState ());
     ADDINT ( GetMessagePos ());
     ADDINT ( GetMessageTime ());
     ADDPTR ( GetOpenClipboardWindow ());
+#endif
     ADDPTR ( GetProcessHeap ());
+#ifndef MS_APP
     ADDPTR ( GetProcessWindowStation ());
+#endif
     /* Following function in some cases stops returning events, and cannot
        be used as an entropy source.  */
     /*ADDINT ( GetQueueStatus (QS_ALLEVENTS));*/
@@ -869,6 +883,7 @@ _gcry_rndw32_gather_random_fast (void (*add)(const void*, size_t,
 #undef ADDPTR
   }
 
+#ifndef MS_APP
   /* Get multiword system information: Current caret position, current
      mouse cursor position.  */
   {
@@ -890,6 +905,7 @@ _gcry_rndw32_gather_random_fast (void (*add)(const void*, size_t,
     GlobalMemoryStatus (&memoryStatus);
     (*add) ( &memoryStatus, sizeof (memoryStatus), origin );
   }
+#endif
 
   /* Get thread and process creation time, exit time, time in kernel
      mode, and time in user mode in 100ns intervals.  */
@@ -924,6 +940,7 @@ _gcry_rndw32_gather_random_fast (void (*add)(const void*, size_t,
   }
 
 
+#ifndef MS_APP
   /* The following are fixed for the lifetime of the process so we only
    * add them once */
   if (!addedFixedItems)
@@ -938,6 +955,7 @@ _gcry_rndw32_gather_random_fast (void (*add)(const void*, size_t,
       (*add) ( &startupInfo, sizeof (STARTUPINFO), origin );
       addedFixedItems = 1;
     }
+#endif
 
   /* The performance of QPC varies depending on the architecture it's
      running on and on the OS, the MS documentation is vague about the

@@ -147,7 +147,6 @@
  */
 
 #include <string.h>
-#include <unistd.h>
 #include <stdint.h>
 
 #include <config.h>
@@ -156,7 +155,7 @@
 #include "random.h"
 #include "rand-internal.h"
 #include "../cipher/bithelp.h"
-
+#include <process.h>
 
 
 /******************************************************************

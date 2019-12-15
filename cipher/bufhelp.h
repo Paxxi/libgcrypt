@@ -342,27 +342,27 @@ static inline u64 buf_get_le64(const void *_buf)
 static inline void buf_put_be64(void *_buf, u64 val)
 {
   byte *out = _buf;
-  out[0] = val >> 56;
-  out[1] = val >> 48;
-  out[2] = val >> 40;
-  out[3] = val >> 32;
-  out[4] = val >> 24;
-  out[5] = val >> 16;
-  out[6] = val >> 8;
-  out[7] = val;
+  out[0] = (byte)(val >> 56);
+  out[1] = (byte)(val >> 48);
+  out[2] = (byte)(val >> 40);
+  out[3] = (byte)(val >> 32);
+  out[4] = (byte)(val >> 24);
+  out[5] = (byte)(val >> 16);
+  out[6] = (byte)(val >> 8);
+  out[7] = (byte)val;
 }
 
 static inline void buf_put_le64(void *_buf, u64 val)
 {
   byte *out = _buf;
-  out[7] = val >> 56;
-  out[6] = val >> 48;
-  out[5] = val >> 40;
-  out[4] = val >> 32;
-  out[3] = val >> 24;
-  out[2] = val >> 16;
-  out[1] = val >> 8;
-  out[0] = val;
+  out[7] = (byte)(val >> 56);
+  out[6] = (byte)(val >> 48);
+  out[5] = (byte)(val >> 40);
+  out[4] = (byte)(val >> 32);
+  out[3] = (byte)(val >> 24);
+  out[2] = (byte)(val >> 16);
+  out[1] = (byte)(val >> 8);
+  out[0] = (byte)val;
 }
 
 #else /*BUFHELP_FAST_UNALIGNED_ACCESS*/

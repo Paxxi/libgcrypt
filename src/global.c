@@ -29,7 +29,6 @@
 #include <ctype.h>
 #include <limits.h>
 #include <errno.h>
-#include <unistd.h>
 #ifdef HAVE_SYSLOG
 # include <syslog.h>
 #endif /*HAVE_SYSLOG*/

@@ -692,7 +692,7 @@ _gcry_mpi_get_const (int no)
     case 3: return _gcry_mpi_const (MPI_C_THREE);
     case 4: return _gcry_mpi_const (MPI_C_FOUR);
     case 8: return _gcry_mpi_const (MPI_C_EIGHT);
-    default: log_bug("unsupported GCRYMPI_CONST_ macro used\n");
+	default: log_bug("unsupported GCRYMPI_CONST_ macro used\n"); return 0;
     }
 }
 

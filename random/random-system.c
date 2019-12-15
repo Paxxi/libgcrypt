@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
-#include <unistd.h>
 #ifdef HAVE_GETTIMEOFDAY
 #include <sys/time.h>
 #endif

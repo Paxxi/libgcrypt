@@ -40,7 +40,14 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+#include <io.h>
+#ifdef HAVE_W32_SYSTEM
+ #define S_IRUSR _S_IREAD
+ #define S_IWUSR _S_IWRITE
+# ifndef S_ISREG
+  # define S_ISREG(m) (((m)& S_IFMT) == S_IFREG)
+# endif
+#endif
 #include <fcntl.h>
 #include <time.h>
 #ifdef	HAVE_GETHRTIME
@@ -52,9 +59,9 @@
 #ifdef HAVE_GETRUSAGE
 #include <sys/resource.h>
 #endif
-#ifdef __MINGW32__
+
 #include <process.h>
-#endif
+
 #include "g10lib.h"
 #include "random.h"
 #include "rand-internal.h"

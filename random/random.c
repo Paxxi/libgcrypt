@@ -28,13 +28,13 @@
 #include <errno.h>
 #include <time.h>
 #include <sys/types.h>
-#include <unistd.h>
 
 #include "g10lib.h"
 #include "random.h"
 #include "rand-internal.h"
 #include "cipher.h"         /* For _gcry_sha1_hash_buffer().  */
 
+#include <process.h>
 
 /* If not NULL a progress function called from certain places and the
    opaque value passed along.  Registered by

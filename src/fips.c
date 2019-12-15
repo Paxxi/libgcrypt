@@ -21,7 +21,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <unistd.h>
+#include <io.h>
+#ifdef HAVE_W32_SYSTEM
+ #ifndef F_OK
+  # define F_OK 0
+ #endif
+#endif
 #include <string.h>
 #ifdef ENABLE_HMAC_BINARY_CHECK
 # include <dlfcn.h>

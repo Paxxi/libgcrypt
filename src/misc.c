@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <unistd.h>
+#include <io.h>
 
 #include "g10lib.h"
 #include "secmem.h"

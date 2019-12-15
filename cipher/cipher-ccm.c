@@ -38,7 +38,7 @@ static unsigned int
 do_cbc_mac (gcry_cipher_hd_t c, const unsigned char *inbuf, size_t inlen,
             int do_padding)
 {
-  const unsigned int blocksize = 16;
+  #define blocksize 16
   gcry_cipher_encrypt_t enc_fn = c->spec->encrypt;
   unsigned char tmp[blocksize];
   unsigned int burn = 0;
@@ -133,12 +133,12 @@ _gcry_cipher_ccm_set_nonce (gcry_cipher_hd_t c, const unsigned char *nonce,
   c->marks.key = marks_key;
 
   /* Setup CTR */
-  c->u_ctr.ctr[0] = L_;
+  c->u_ctr.ctr[0] = (unsigned char)L_;
   memcpy (&c->u_ctr.ctr[1], nonce, noncelen);
   memset (&c->u_ctr.ctr[1 + noncelen], 0, L);
 
   /* Setup IV */
-  c->u_iv.iv[0] = L_;
+  c->u_iv.iv[0] = (unsigned char)L_;
   memcpy (&c->u_iv.iv[1], nonce, noncelen);
   /* Add (8 * M_ + 64 * flags) to iv[0] and set iv[noncelen + 1 ... 15] later
      in set_aad.  */
