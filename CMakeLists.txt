@@ -14,6 +14,7 @@ file(COPY mpi/generic/mpi-asm-defs.h DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/mpi
 add_library(libgcrypt
   cipher/arcfour.c
   cipher/bithelp.h
+  cipher/blake2.c
   cipher/blowfish.c
   cipher/bufhelp.h
   cipher/camellia-glue.c
@@ -35,6 +36,7 @@ add_library(libgcrypt
   cipher/cipher-poly1305.c
   cipher/cipher-selftest.c
   cipher/cipher-selftest.h
+  cipher/cipher-xts.c
   cipher/cipher.c
   cipher/crc-intel-pclmul.c
   cipher/crc.c
@@ -139,6 +141,9 @@ add_library(libgcrypt
   mpi/mpih-div.c
   mpi/mpih-mul.c
   mpi/mpiutil.c
+  random/jitterentropy-base-user.h
+  random/jitterentropy-base.c
+  random/jitterentropy.h
   random/rand-internal.h
   random/random-csprng.c
   random/random-drbg.c
@@ -147,6 +152,7 @@ add_library(libgcrypt
   random/random.h
   random/rndhw.c
   random/rndw32.c
+  random/rndjent.c
   src/cipher-proto.h
   src/cipher.h
   src/context.c
