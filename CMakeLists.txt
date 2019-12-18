@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(libgcrypt VERSION 1.7.6 LANGUAGES C CXX)
+project(libgcrypt VERSION 1.8.5 LANGUAGES C CXX)
 
 find_package(libgpg-error 1.36.0 NO_MODULE REQUIRED)
 find_package(iconv NO_MODULE REQUIRED)
