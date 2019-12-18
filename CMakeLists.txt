@@ -141,9 +141,6 @@ add_library(libgcrypt
   mpi/mpih-div.c
   mpi/mpih-mul.c
   mpi/mpiutil.c
-  random/jitterentropy-base-user.h
-  random/jitterentropy-base.c
-  random/jitterentropy.h
   random/rand-internal.h
   random/random-csprng.c
   random/random-drbg.c

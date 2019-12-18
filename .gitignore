@@ -105,3 +105,4 @@ tests/t-sexp
 tests/tsexp
 tests/version
 tests/*.exe
+build*/
