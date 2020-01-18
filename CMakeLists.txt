@@ -4,6 +4,23 @@ project(libgcrypt VERSION 1.8.5 LANGUAGES C CXX)
 
 find_package(libgpg-error 1.36.0 NO_MODULE REQUIRED)
 find_package(iconv NO_MODULE REQUIRED)
+find_program(GIT git)
+
+message("GIT_FOUND ${GIT_FOUND}")
+message("GIT ${GIT}")
+if(GIT)
+execute_process(
+  COMMAND "${GIT}" log -1 --format=%h
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  OUTPUT_VARIABLE BUILD_REVISION
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+endif()
+
+message("BUILD_REVISION ${BUILD_REVISION}")
+
+string(TIMESTAMP BUILD_TIMESTAMP UTC)
+set(VERSION ${PROJECT_VERSION})
 
 if(MSVC)
   set(CMAKE_DEBUG_POSTFIX "d")
@@ -11,6 +28,9 @@ endif()
 
 file(COPY mpi/generic/mpi-asm-defs.h DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/mpi) 
 
+configure_file(cmake/version.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/version.h
+)
 add_library(libgcrypt
   cipher/arcfour.c
   cipher/bithelp.h
@@ -107,7 +127,7 @@ add_library(libgcrypt
   cmake/gost-sb.h
   cmake/libgcrypt.def
   cmake/mod-source-info.h
-  cmake/version.h
+  ${CMAKE_CURRENT_BINARY_DIR}/version.h
   compat/compat.c
   compat/libcompat.h
   mpi/ec-ed25519.c
